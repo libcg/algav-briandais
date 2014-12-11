@@ -2,6 +2,8 @@
 #include <iostream>
 #include <algorithm>
 
+using namespace std;
+
 HybridTrie::HybridTrie() :
     m_left(NULL),
     m_child(NULL),
@@ -36,18 +38,18 @@ HybridTrie::~HybridTrie()
     delete m_right;
 }
 
-void HybridTrie::insert(std::string word)
+void HybridTrie::insert(string word)
 {
     if (word.empty()) {
         return;
     }
 
-    /* If we are inserting the last character, this node is marked as a key */
-    m_key = (word.length() == 1);
-
     if (m_char == '\0') {
         m_char = word.front();
     }
+
+    /* If we are inserting the last matching character, this node is marked as a key */
+    m_key |= (word.front() == m_char && word.length() == 1);
 
     if (word.front() < m_char) {
         if (m_left == NULL) {
@@ -56,13 +58,15 @@ void HybridTrie::insert(std::string word)
 
         m_left->insert(word);
     }
-    else if (word.front() == m_char && !m_key) {
+    else if (word.front() == m_char && word.length() > 1) {
+        string w(word);
+
         if (m_child == NULL) {
             m_child = new HybridTrie();
         }
 
         /* Insert the string minus the first letter */
-        m_child->insert(word.erase(0, 1));
+        m_child->insert(w.erase(0, 1));
     }
     else if (word.front() > m_char) {
         if (m_right == NULL) {
@@ -79,13 +83,13 @@ void HybridTrie::print()
         m_left->print();
     }
 
-    std::cout << m_char;
+    cout << m_char;
 
     if (m_child) {
         m_child->print();
     }
     else {
-        std::cout << std::endl;
+        cout << endl;
     }
 
     if (m_right) {
@@ -93,7 +97,7 @@ void HybridTrie::print()
     }
 }
 
-bool HybridTrie::exists(std::string word)
+bool HybridTrie::exists(string word)
 {
     if (word.empty()) {
         return false;
@@ -107,7 +111,9 @@ bool HybridTrie::exists(std::string word)
         return m_left->exists(word);
     }
     else if (word.front() == m_char && m_child) {
-        return m_child->exists(word.erase(0, 1));
+        string w(word);
+        
+        return m_child->exists(w.erase(0, 1));
     }
     else if (word.front() > m_char && m_right) {
         return m_right->exists(word);
@@ -134,10 +140,10 @@ int HybridTrie::countWords()
     return count;
 }
 
-std::vector<std::string> HybridTrie::listWords()
+vector<string> HybridTrie::listWords()
 {
-    std::vector<std::string> vs;
-    std::string s;
+    vector<string> vs;
+    string s;
 
     listWords(vs, s);
 
@@ -205,7 +211,7 @@ int HybridTrie::meanDepth()
     }
 }
 
-int HybridTrie::prefix(std::string word)
+int HybridTrie::prefix(string word)
 {
     if (word.empty()) {
         return 0;
@@ -225,7 +231,9 @@ int HybridTrie::prefix(std::string word)
         return m_left->prefix(word);
     }
     else if (word.front() == m_char && m_child) {
-        return m_child->prefix(word.erase(0, 1));
+        string w(word);
+
+        return m_child->prefix(w.erase(0, 1));
     }
     else if (word.front() > m_char && m_right) {
         return m_right->prefix(word);
@@ -234,7 +242,7 @@ int HybridTrie::prefix(std::string word)
     return 0;
 }
 
-void HybridTrie::remove(std::string word)
+void HybridTrie::remove(string word)
 {
     if (word.empty()) {
         return;
@@ -249,7 +257,9 @@ void HybridTrie::remove(std::string word)
         m_left->remove(word);
     }
     else if (word.front() == m_char && m_child) {
-        m_child->remove(word.erase(0, 1));
+        string w(word);
+
+        m_child->remove(w.erase(0, 1));
 
         /* If there is no words left in the subtree we can remove it safely */
         if (m_child->countWords() == 0) {
@@ -264,13 +274,13 @@ void HybridTrie::remove(std::string word)
 
 HybridTrie HybridTrie::merge(HybridTrie &trie)
 {
-    std::vector<std::string> wa(listWords());
-    std::vector<std::string> wb(trie.listWords());
+    vector<string> wa(listWords());
+    vector<string> wb(trie.listWords());
     HybridTrie t;
 
     /* Concatenate, sort in alphabetical order, insert */
     wa.insert(wa.end(), wb.begin(), wb.end());
-    std::sort(wa.begin(), wa.end());
+    sort(wa.begin(), wa.end());
     t.insertSorted(wa, 0, wa.size());
 
     return t;
@@ -300,15 +310,15 @@ HybridTrie& HybridTrie::operator=(const HybridTrie& t)
     return *this;
 }
 
-void HybridTrie::listWords(std::vector<std::string> &vs, std::string &s)
+void HybridTrie::listWords(vector<string> &vs, string &s)
 {
-    std::string sc(s);
+    string sc(s);
 
     if (m_left) {
         m_left->listWords(vs, s);
     }
 
-    sc.append(std::string(&m_char, 1));
+    sc.append(string(&m_char, 1));
 
     /* We have encountered the end of a word. Add it to the vector */
     if (m_key) {
@@ -324,7 +334,7 @@ void HybridTrie::listWords(std::vector<std::string> &vs, std::string &s)
     }
 }
 
-void HybridTrie::insertSorted(std::vector<std::string> &vs, int begin, int end)
+void HybridTrie::insertSorted(vector<string> &vs, int begin, int end)
 {
     /* Inserting a sorted array in order would result in a degenerate tree.
      * Instead, use the middle element of the array as a pivot, insert it, and

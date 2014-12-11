@@ -28,6 +28,8 @@ public:
     BriandaisTrie& operator=(const BriandaisTrie& t);
 
 private:
+    void listWords(std::vector<std::string> &vs, std::string &s);
+
     BriandaisTrie *m_child;
     BriandaisTrie *m_right;
     bool m_key;

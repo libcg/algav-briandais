@@ -1,4 +1,4 @@
-#include "hybridtrie.h"
+#include "briandaistrie.h"
 #include "test.h"
 #include <iostream>
 
@@ -7,7 +7,7 @@ using namespace std;
 TEST(exists)
 {
     cout << " exists";
-    HybridTrie t;
+    BriandaisTrie t;
 
     ASSERT(!t.exists(""))
 
@@ -23,7 +23,7 @@ TEST(exists)
 TEST(countWords)
 {
     cout << " countWords";
-    HybridTrie t;
+    BriandaisTrie t;
 
     t.insert("");
     ASSERT(t.countWords() == 0)
@@ -52,7 +52,7 @@ TEST(countWords)
 TEST(listWords)
 {
     cout << " listWords";
-    HybridTrie t;
+    BriandaisTrie t;
 
     ASSERT(t.listWords().empty())
 
@@ -85,21 +85,21 @@ TEST(listWords)
 TEST(countNil)
 {
     cout << " countNil";
-    HybridTrie t;  
+    BriandaisTrie t;  
 
-    ASSERT(t.countNil() == 3)
+    ASSERT(t.countNil() == 2)
 
     t.insert("m");
-    ASSERT(t.countNil() == 3)
+    ASSERT(t.countNil() == 2)
 
     t.insert("ma");
-    ASSERT(t.countNil() == 5)
+    ASSERT(t.countNil() == 3)
     
     t.insert("a");
-    ASSERT(t.countNil() == 7)
+    ASSERT(t.countNil() == 4)
 
     t.insert("z");
-    ASSERT(t.countNil() == 9)
+    ASSERT(t.countNil() == 5)
 
     SUCCESS()  
 }
@@ -107,7 +107,7 @@ TEST(countNil)
 TEST(height)
 {
     cout << " height";
-    HybridTrie t;  
+    BriandaisTrie t;  
 
     ASSERT(t.height() == 1)
 
@@ -121,7 +121,7 @@ TEST(height)
     ASSERT(t.height() == 2)
 
     t.insert("z");
-    ASSERT(t.height() == 2)
+    ASSERT(t.height() == 3)
 
     t.insert("abcdefghijklmnopqrstuvwxyz");
     ASSERT(t.height() == 27)
@@ -132,7 +132,7 @@ TEST(height)
 TEST(meanDepth)
 {
     cout << " meanDepth";
-    HybridTrie t;
+    BriandaisTrie t;
 
     ASSERT(t.meanDepth() == 1)
 
@@ -151,7 +151,7 @@ TEST(meanDepth)
 TEST(prefix)
 {
     cout << " prefix";
-    HybridTrie t;
+    BriandaisTrie t;
 
     ASSERT(t.prefix("algav") == 0)
 
@@ -175,7 +175,7 @@ TEST(prefix)
 TEST(remove)
 {
     cout << " remove";
-    HybridTrie t;
+    BriandaisTrie t;
 
     t.insert("algav");
     t.insert("alg");
@@ -197,9 +197,9 @@ TEST(remove)
 TEST(merge)
 {
     cout << " merge";
-    HybridTrie ta;
-    HybridTrie tb;
-    HybridTrie tc;
+    BriandaisTrie ta;
+    BriandaisTrie tb;
+    BriandaisTrie tc;
 
     ta.insert("hello");
     ta.insert("algav");

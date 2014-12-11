@@ -1,5 +1,8 @@
 #include "briandaistrie.h"
 #include <iostream>
+#include <algorithm>
+
+using namespace std;
 
 BriandaisTrie::BriandaisTrie() :
     m_child(NULL),
@@ -29,26 +32,28 @@ BriandaisTrie::~BriandaisTrie()
     delete m_right;
 }
 
-void BriandaisTrie::insert(std::string word)
+void BriandaisTrie::insert(string word)
 {
     if (word.empty()) {
         return;
     }
 
-    /* If we are inserting the last character, this node is marked as a key */
-    m_key = (word.length() == 1);
-
     if (m_char == '\0') {
         m_char = word.front();
     }
 
-    if (word.front() == m_char && !m_key) {
+    /* If we are inserting the last matching character, this node is marked as a key */
+    m_key |= (word.front() == m_char && word.length() == 1);
+
+    if (word.front() == m_char && word.length() > 1) {
+        string w(word);
+
         if (m_child == NULL) {
             m_child = new BriandaisTrie();
         }
 
         /* Insert the string minus the first letter */
-        m_child->insert(word.erase(0, 1));
+        m_child->insert(w.erase(0, 1));
     }
     else if (word.front() != m_char) {
         if (m_right == NULL) {
@@ -61,13 +66,13 @@ void BriandaisTrie::insert(std::string word)
 
 void BriandaisTrie::print()
 {
-    std::cout << m_char;
+    cout << m_char;
 
     if (m_child) {
         m_child->print();
     }
     else {
-        std::cout << std::endl;
+        cout << endl;
     }
 
     if (m_right) {
@@ -75,7 +80,7 @@ void BriandaisTrie::print()
     }
 }
 
-bool BriandaisTrie::exists(std::string word)
+bool BriandaisTrie::exists(string word)
 {
     if (word.empty()) {
         return false;
@@ -86,7 +91,9 @@ bool BriandaisTrie::exists(std::string word)
     }
 
     if (word.front() == m_char && m_child) {
-        return m_child->exists(word.erase(0, 1));
+        string w(word);
+
+        return m_child->exists(w.erase(0, 1));
     }
     else if (word.front() != m_char && m_right) {
         return m_right->exists(word);
@@ -110,12 +117,13 @@ int BriandaisTrie::countWords()
     return count;
 }
 
-std::vector<std::string> BriandaisTrie::listWords()
+vector<string> BriandaisTrie::listWords()
 {
-    std::vector<std::string> vs;
-    std::string s;
+    vector<string> vs;
+    string s;
 
-    //listWords(vs, s);
+    listWords(vs, s);
+    sort(vs.begin(), vs.end());
 
     return vs;
 }
@@ -171,7 +179,7 @@ int BriandaisTrie::meanDepth()
     }
 }
 
-int BriandaisTrie::prefix(std::string word)
+int BriandaisTrie::prefix(string word)
 {
     if (word.empty()) {
         return 0;
@@ -188,7 +196,9 @@ int BriandaisTrie::prefix(std::string word)
     }
 
     if (word.front() == m_char && m_child) {
-        return m_child->prefix(word.erase(0, 1));
+        string w(word);
+
+        return m_child->prefix(w.erase(0, 1));
     }
     else if (word.front() != m_char && m_right) {
         return m_right->prefix(word);
@@ -197,7 +207,7 @@ int BriandaisTrie::prefix(std::string word)
     return 0;
 }
 
-void BriandaisTrie::remove(std::string word)
+void BriandaisTrie::remove(string word)
 {
     if (word.empty()) {
         return;
@@ -209,7 +219,9 @@ void BriandaisTrie::remove(std::string word)
     }
 
     if (word.front() == m_char && m_child) {
-        m_child->remove(word.erase(0, 1));
+        string w(word);
+
+        m_child->remove(w.erase(0, 1));
 
         /* If there is no words left in the subtree we can remove it safely */
         if (m_child->countWords() == 0) {
@@ -224,16 +236,16 @@ void BriandaisTrie::remove(std::string word)
 
 BriandaisTrie BriandaisTrie::merge(BriandaisTrie &trie)
 {
-    std::vector<std::string> wa(listWords());
-    std::vector<std::string> wb(trie.listWords());
+    vector<string> wa(listWords());
+    vector<string> wb(trie.listWords());
     BriandaisTrie t;
 
     /* Concatenate, sort in alphabetical order */
     wa.insert(wa.end(), wb.begin(), wb.end());
-    std::sort(wa.begin(), wa.end());
+    sort(wa.begin(), wa.end());
 
-    for (int i = 0; i < wa.size(); i++) {
-        t.insert(wa.at(i);
+    for (unsigned int i = 0; i < wa.size(); i++) {
+        t.insert(wa.at(i));
     }
 
     return t;
@@ -242,14 +254,10 @@ BriandaisTrie BriandaisTrie::merge(BriandaisTrie &trie)
 BriandaisTrie& BriandaisTrie::operator=(const BriandaisTrie& t)
 {
     if (this != &t) {
-        delete m_left;
         delete m_child;
         delete m_right;
 
         /* Make a deep copy of the tree (subtrees are reallocated) */
-        if (t.m_left != NULL) {
-            m_left = new BriandaisTrie(*t.m_left);
-        }
         if (t.m_child != NULL) {
             m_child = new BriandaisTrie(*t.m_child);
         }
@@ -263,15 +271,11 @@ BriandaisTrie& BriandaisTrie::operator=(const BriandaisTrie& t)
     return *this;
 }
 
-void BriandaisTrie::listWords(std::vector<std::string> &vs, std::string &s)
+void BriandaisTrie::listWords(vector<string> &vs, string &s)
 {
-    std::string sc(s);
+    string sc(s);
 
-    if (m_left) {
-        m_left->listWords(vs, s);
-    }
-
-    sc.append(std::string(&m_char, 1));
+    sc.append(string(&m_char, 1));
 
     /* We have encountered the end of a word. Add it to the vector */
     if (m_key) {
@@ -287,21 +291,3 @@ void BriandaisTrie::listWords(std::vector<std::string> &vs, std::string &s)
     }
 }
 
-void BriandaisTrie::insertSorted(std::vector<std::string> &vs, int begin, int end)
-{
-    /* Inserting a sorted array in order would result in a degenerate tree.
-     * Instead, use the middle element of the array as a pivot, insert it, and
-     * insert the remaining words on left and right recursively to get a
-     * reasonably balanced tree.
-     */
-    int mid = (begin + end) / 2;
-
-    insert(vs.at(mid));
-
-    if (mid > begin) {
-        insertSorted(vs, begin, mid);
-    }
-    if (mid + 1 < end) {
-        insertSorted(vs, mid + 1, end);
-    }
-}

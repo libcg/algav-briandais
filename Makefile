@@ -5,7 +5,7 @@ LDFLAGS=
 all: hybridtrie_test
 
 clean:
-	rm obj/*.o $(EXEC)
+	rm -f obj/*.o bin/*
 
 check: hybridtrie_test
 	./bin/hybridtrie_test

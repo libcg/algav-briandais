@@ -17,8 +17,8 @@ public:
     virtual int countNil() = 0;
     virtual int height() = 0;
     virtual int meanDepth() = 0;
-    virtual int prefix(std::string &word) = 0;
-    virtual void remove(std::string &word) = 0;
+    virtual int prefix(std::string word) = 0;
+    virtual void remove(std::string word) = 0;
 };
 
 #endif /* __TRIE_H */

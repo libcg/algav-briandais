@@ -14,14 +14,18 @@ public:
     /* Advanced functions */
     bool exists(std::string word);
     int countWords();
-    std::vector<std::string> listWords() { return std::vector<std::string>(); }
-    int countNil() {return 0;}
-    int height() {return 0;}
-    int meanDepth() {return 0;}
-    int prefix(std::string &word) {return 0;}
-    void remove(std::string &word) {}
+    std::vector<std::string> listWords();
+    int countNil();
+    int height();
+    int meanDepth();
+    int prefix(std::string word);
+    void remove(std::string word);
 
+    /* Complex functions */
+    /* TODO */
 private:
+    void listWords(std::vector<std::string> &vs, std::string &s);
+
     HybridTrie *m_left;
     HybridTrie *m_child;
     HybridTrie *m_right;

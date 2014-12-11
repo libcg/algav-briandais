@@ -24,6 +24,7 @@ public:
 
     /* Complex functions */
     HybridTrie merge(HybridTrie &trie);
+    void balance();
 
     HybridTrie& operator=(const HybridTrie& t);
 

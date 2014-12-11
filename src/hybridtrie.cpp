@@ -286,6 +286,13 @@ HybridTrie HybridTrie::merge(HybridTrie &trie)
     return t;
 }
 
+void HybridTrie::balance()
+{
+    HybridTrie t;
+
+    *this = this->merge(t);
+}
+
 HybridTrie& HybridTrie::operator=(const HybridTrie& t)
 {
     if (this != &t) {

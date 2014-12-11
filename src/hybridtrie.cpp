@@ -286,6 +286,18 @@ HybridTrie HybridTrie::merge(HybridTrie &trie)
     return t;
 }
 
+BriandaisTrie HybridTrie::toBriandais()
+{
+    BriandaisTrie t;
+    vector<string> vs(listWords());
+
+    for (auto it = vs.begin(); it != vs.end(); it++) {
+        t.insert(*it);
+    }
+
+    return t;
+}
+
 void HybridTrie::balance()
 {
     HybridTrie t;

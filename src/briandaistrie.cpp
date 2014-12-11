@@ -251,6 +251,18 @@ BriandaisTrie BriandaisTrie::merge(BriandaisTrie &trie)
     return t;
 }
 
+HybridTrie BriandaisTrie::toHybrid()
+{
+    HybridTrie t;
+    vector<string> vs(listWords());
+
+    for (auto it = vs.begin(); it != vs.end(); it++) {
+        t.insert(*it);
+    }
+
+    return t;
+}
+
 BriandaisTrie& BriandaisTrie::operator=(const BriandaisTrie& t)
 {
     if (this != &t) {

@@ -1,7 +1,10 @@
 #ifndef __HYBRIDTRIE_H
 #define __HYBRIDTRIE_H
 
+class HybridTrie;
+
 #include "trie.h"
+#include "briandaistrie.h"
 #include <vector>
 
 class HybridTrie : public Trie {
@@ -24,6 +27,7 @@ public:
 
     /* Complex functions */
     HybridTrie merge(HybridTrie &trie);
+    BriandaisTrie toBriandais();
     void balance();
 
     HybridTrie& operator=(const HybridTrie& t);

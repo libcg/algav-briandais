@@ -1,8 +1,44 @@
 #include "hybridtrie.h"
 #include "test.h"
 #include <iostream>
+#include <sstream>
+#include <algorithm>
 
 using namespace std;
+
+TEST(base)
+{
+    cout << " base";
+    string sentence(
+        "A quel genial professeur de dactylographie sommes nous redevables de l"
+        "a superbe phrase ci dessous, un modele du genre, que toute dactylo con"
+        "nait par coeur puisque elle fait appel a chacune des touches du clavie"
+        "r de la machine a ecrire ?"
+    );
+    string word;
+    HybridTrie t;
+
+    istringstream iss(sentence, istringstream::in);
+
+    /* Iterate over each word of the sentence */
+    while (iss >> word) {
+        /* Remove non-letter characters */
+        word.erase(remove_if(word.begin(), word.end(),
+            [](char c) {
+                return !((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+            }),
+            word.end()
+        );
+
+        if (!word.empty()) {
+            t.insert(word);
+        }
+    }
+
+    ASSERT(t.countWords() == 35)
+
+    SUCCESS()
+}
 
 TEST(exists)
 {
@@ -225,6 +261,7 @@ int main(int argc, char *argv[])
 {
     test_t test[] =
     {
+        test_base,
         test_exists,
         test_countWords,
         test_listWords,

@@ -7,6 +7,7 @@
 class HybridTrie : public Trie {
 public:
     HybridTrie();
+    HybridTrie(const HybridTrie &t);
     ~HybridTrie();
     void insert(std::string word);
     void print();
@@ -22,9 +23,13 @@ public:
     void remove(std::string word);
 
     /* Complex functions */
-    /* TODO */
+    HybridTrie merge(HybridTrie &trie);
+
+    HybridTrie& operator=(const HybridTrie& t);
+
 private:
     void listWords(std::vector<std::string> &vs, std::string &s);
+    void insertSorted(std::vector<std::string> &vs, int begin, int end);
 
     HybridTrie *m_left;
     HybridTrie *m_child;

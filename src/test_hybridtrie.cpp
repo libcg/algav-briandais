@@ -1,14 +1,10 @@
 #include "hybridtrie.h"
+#include "test.h"
 #include <iostream>
 
 using namespace std;
 
-#define ASSERT(p) \
-    if (!(p)) { return true; }
-#define SUCCESS() \
-    return false;
-
-static bool test_exists()
+TEST(exists)
 {
     cout << " exists";
     HybridTrie t;
@@ -24,7 +20,7 @@ static bool test_exists()
     SUCCESS()
 }
 
-static bool test_countWords()
+TEST(countWords)
 {
     cout << " countWords";
     HybridTrie t;
@@ -50,7 +46,7 @@ static bool test_countWords()
     SUCCESS()
 }
 
-static bool test_listWords()
+TEST(listWords)
 {
     cout << " listWords";
     HybridTrie t;
@@ -83,7 +79,7 @@ static bool test_listWords()
     SUCCESS()
 }
 
-static bool test_countNil()
+TEST(countNil)
 {
     cout << " countNil";
     HybridTrie t;  
@@ -105,7 +101,7 @@ static bool test_countNil()
     SUCCESS()  
 }
 
-static bool test_height()
+TEST(height)
 {
     cout << " height";
     HybridTrie t;  
@@ -130,7 +126,7 @@ static bool test_height()
     SUCCESS()  
 }
 
-static bool test_meanDepth()
+TEST(meanDepth)
 {
     cout << " meanDepth";
     HybridTrie t;
@@ -149,7 +145,7 @@ static bool test_meanDepth()
     SUCCESS()
 }
 
-static bool test_prefix()
+TEST(prefix)
 {
     cout << " prefix";
     HybridTrie t;
@@ -173,7 +169,7 @@ static bool test_prefix()
     SUCCESS()
 }
 
-static bool test_remove()
+TEST(remove)
 {
     cout << " remove";
     HybridTrie t;
@@ -195,35 +191,47 @@ static bool test_remove()
     SUCCESS()
 }
 
-static bool (*test[])() =
+TEST(merge)
 {
-    test_exists,
-    test_countWords,
-    test_listWords,
-    test_countNil,
-    test_height,
-    test_meanDepth,
-    test_prefix,
-    test_remove
-};
+    cout << " merge";
+    HybridTrie ta;
+    HybridTrie tb;
+    HybridTrie tc;
+
+    ta.insert("hello");
+    ta.insert("algav");
+    ta.insert("set");
+    tb.insert("algev");
+    tb.insert("ermaged");
+    tb.insert("success");
+    tb.insert("set");
+    tb.insert("alg");
+    tc = ta.merge(tb);
+    ASSERT(tc.listWords().at(0) == "alg")
+    ASSERT(tc.listWords().at(1) == "algav")
+    ASSERT(tc.listWords().at(2) == "algev")
+    ASSERT(tc.listWords().at(3) == "ermaged")
+    ASSERT(tc.listWords().at(4) == "hello")
+    ASSERT(tc.listWords().at(5) == "set")
+    ASSERT(tc.listWords().at(6) == "success")
+
+    SUCCESS()
+}
 
 int main(int argc, char *argv[])
 {
-    int n = (sizeof(test) / sizeof(bool(*)()));
-    int count = 0;
+    test_t test[] =
+    {
+        test_exists,
+        test_countWords,
+        test_listWords,
+        test_countNil,
+        test_height,
+        test_meanDepth,
+        test_prefix,
+        test_remove,
+        test_merge
+    };
 
-    for (int i = 0; i < n; i++) {
-        cout << "test " << i;
-        if (test[i]()) {
-            cout << " failed" << endl;
-        }
-        else {
-            cout << " passed" << endl;
-            count++;
-        }
-    }
-
-    cout << count << '/' << n << " tests passed." << endl;
-
-    return (count != n);
+    return test_run(test, sizeof(test) / sizeof(test_t));
 }

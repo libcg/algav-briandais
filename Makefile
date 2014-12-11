@@ -2,15 +2,15 @@ CC=g++
 CPPFLAGS=-Iinclude/ -Wall -std=c++11 -g
 LDFLAGS=
 
-all: hybridtrie_test
+all: test_hybridtrie
 
 clean:
 	rm -f obj/*.o bin/*
 
-check: hybridtrie_test
-	./bin/hybridtrie_test
+check: test_hybridtrie
+	./bin/test_hybridtrie
 
-hybridtrie_test: obj/hybridtrie.o obj/hybridtrie_test.o
+test_hybridtrie: obj/hybridtrie.o obj/test_hybridtrie.o obj/test.o
 	$(CC) -o bin/$@ $^ $(LDFLAGS)
 
 obj/%.o: src/%.cpp

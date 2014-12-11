@@ -1,42 +1,35 @@
-#include "hybridtrie.h"
+#include "briandaistrie.h"
 #include <iostream>
-#include <algorithm>
 
-HybridTrie::HybridTrie() :
-    m_left(NULL),
+BriandaisTrie::BriandaisTrie() :
     m_child(NULL),
     m_right(NULL),
     m_key(false),
     m_char('\0')
 {}
 
-HybridTrie::HybridTrie(const HybridTrie &t) :
-    m_left(NULL),
+BriandaisTrie::BriandaisTrie(const BriandaisTrie &t) :
     m_child(NULL),
     m_right(NULL),
     m_key(t.m_key),
     m_char(t.m_char)
 {
     /* Make a deep copy of the tree (subtrees are reallocated) */
-    if (t.m_left != NULL) {
-        m_left = new HybridTrie(*t.m_left);
-    }
     if (t.m_child != NULL) {
-        m_child = new HybridTrie(*t.m_child);
+        m_child = new BriandaisTrie(*t.m_child);
     }
     if (t.m_right != NULL) {
-        m_right = new HybridTrie(*t.m_right);
+        m_right = new BriandaisTrie(*t.m_right);
     }
 }
 
-HybridTrie::~HybridTrie()
+BriandaisTrie::~BriandaisTrie()
 {
-    delete m_left;
     delete m_child;
     delete m_right;
 }
 
-void HybridTrie::insert(std::string word)
+void BriandaisTrie::insert(std::string word)
 {
     if (word.empty()) {
         return;
@@ -49,36 +42,25 @@ void HybridTrie::insert(std::string word)
         m_char = word.front();
     }
 
-    if (word.front() < m_char) {
-        if (m_left == NULL) {
-            m_left = new HybridTrie();
-        }
-
-        m_left->insert(word);
-    }
-    else if (word.front() == m_char && !m_key) {
+    if (word.front() == m_char && !m_key) {
         if (m_child == NULL) {
-            m_child = new HybridTrie();
+            m_child = new BriandaisTrie();
         }
 
         /* Insert the string minus the first letter */
         m_child->insert(word.erase(0, 1));
     }
-    else if (word.front() > m_char) {
+    else if (word.front() != m_char) {
         if (m_right == NULL) {
-            m_right = new HybridTrie();
+            m_right = new BriandaisTrie();
         }
 
         m_right->insert(word);
     }
 }
 
-void HybridTrie::print()
+void BriandaisTrie::print()
 {
-    if (m_left) {
-        m_left->print();
-    }
-
     std::cout << m_char;
 
     if (m_child) {
@@ -93,7 +75,7 @@ void HybridTrie::print()
     }
 }
 
-bool HybridTrie::exists(std::string word)
+bool BriandaisTrie::exists(std::string word)
 {
     if (word.empty()) {
         return false;
@@ -103,27 +85,21 @@ bool HybridTrie::exists(std::string word)
         return word.front() == m_char && m_key;
     }
 
-    if (word.front() < m_char && m_left) {
-        return m_left->exists(word);
-    }
-    else if (word.front() == m_char && m_child) {
+    if (word.front() == m_char && m_child) {
         return m_child->exists(word.erase(0, 1));
     }
-    else if (word.front() > m_char && m_right) {
+    else if (word.front() != m_char && m_right) {
         return m_right->exists(word);
     }
 
     return false;
 }
 
-int HybridTrie::countWords()
+int BriandaisTrie::countWords()
 {
     /* We count the number of keys (last letter of a word) found in the tree */
     int count = (int)m_key;
 
-    if (m_left) { 
-        count += m_left->countWords();
-    }
     if (m_child) {
         count += m_child->countWords();
     }
@@ -134,23 +110,20 @@ int HybridTrie::countWords()
     return count;
 }
 
-std::vector<std::string> HybridTrie::listWords()
+std::vector<std::string> BriandaisTrie::listWords()
 {
     std::vector<std::string> vs;
     std::string s;
 
-    listWords(vs, s);
+    //listWords(vs, s);
 
     return vs;
 }
 
-int HybridTrie::countNil()
+int BriandaisTrie::countNil()
 {
-    int count = (m_left == NULL) + (m_child == NULL) + (m_right == NULL);
+    int count = (m_child == NULL) + (m_right == NULL);
 
-    if (m_left) { 
-        count += m_left->countNil();
-    }
     if (m_child) {
         count += m_child->countNil();
     }
@@ -161,14 +134,11 @@ int HybridTrie::countNil()
     return count;
 }
 
-int HybridTrie::height()
+int BriandaisTrie::height()
 {
     int maxh = 0;
     int subh;
 
-    if (m_left && (subh = m_left->height()) > maxh) { 
-        maxh = subh;
-    }
     if (m_child && (subh = m_child->height()) > maxh) { 
         maxh = subh;
     }
@@ -179,15 +149,11 @@ int HybridTrie::height()
     return 1 + maxh;
 }
 
-int HybridTrie::meanDepth()
+int BriandaisTrie::meanDepth()
 {
     int sum = 0;
     int cnt = 0;
 
-    if (m_left) { 
-        sum += m_left->meanDepth();
-        cnt ++;
-    }
     if (m_child) { 
         sum += m_child->meanDepth();
         cnt ++;
@@ -205,7 +171,7 @@ int HybridTrie::meanDepth()
     }
 }
 
-int HybridTrie::prefix(std::string word)
+int BriandaisTrie::prefix(std::string word)
 {
     if (word.empty()) {
         return 0;
@@ -221,20 +187,17 @@ int HybridTrie::prefix(std::string word)
         return count;
     }
 
-    if (word.front() < m_char && m_left) {
-        return m_left->prefix(word);
-    }
-    else if (word.front() == m_char && m_child) {
+    if (word.front() == m_char && m_child) {
         return m_child->prefix(word.erase(0, 1));
     }
-    else if (word.front() > m_char && m_right) {
+    else if (word.front() != m_char && m_right) {
         return m_right->prefix(word);
     }
 
     return 0;
 }
 
-void HybridTrie::remove(std::string word)
+void BriandaisTrie::remove(std::string word)
 {
     if (word.empty()) {
         return;
@@ -245,10 +208,7 @@ void HybridTrie::remove(std::string word)
         m_key = false;
     }
 
-    if (word.front() < m_char && m_left) {
-        m_left->remove(word);
-    }
-    else if (word.front() == m_char && m_child) {
+    if (word.front() == m_char && m_child) {
         m_child->remove(word.erase(0, 1));
 
         /* If there is no words left in the subtree we can remove it safely */
@@ -257,26 +217,29 @@ void HybridTrie::remove(std::string word)
             m_child = NULL;
         }
     }
-    else if (word.front() > m_char && m_right) {
+    else if (word.front() != m_char && m_right) {
         m_right->remove(word);
     }
 }
 
-HybridTrie HybridTrie::merge(HybridTrie &trie)
+BriandaisTrie BriandaisTrie::merge(BriandaisTrie &trie)
 {
     std::vector<std::string> wa(listWords());
     std::vector<std::string> wb(trie.listWords());
-    HybridTrie t;
+    BriandaisTrie t;
 
-    /* Concatenate, sort in alphabetical order, insert */
+    /* Concatenate, sort in alphabetical order */
     wa.insert(wa.end(), wb.begin(), wb.end());
     std::sort(wa.begin(), wa.end());
-    t.insertSorted(wa, 0, wa.size());
+
+    for (int i = 0; i < wa.size(); i++) {
+        t.insert(wa.at(i);
+    }
 
     return t;
 }
 
-HybridTrie& HybridTrie::operator=(const HybridTrie& t)
+BriandaisTrie& BriandaisTrie::operator=(const BriandaisTrie& t)
 {
     if (this != &t) {
         delete m_left;
@@ -285,13 +248,13 @@ HybridTrie& HybridTrie::operator=(const HybridTrie& t)
 
         /* Make a deep copy of the tree (subtrees are reallocated) */
         if (t.m_left != NULL) {
-            m_left = new HybridTrie(*t.m_left);
+            m_left = new BriandaisTrie(*t.m_left);
         }
         if (t.m_child != NULL) {
-            m_child = new HybridTrie(*t.m_child);
+            m_child = new BriandaisTrie(*t.m_child);
         }
         if (t.m_right != NULL) {
-            m_right = new HybridTrie(*t.m_right);
+            m_right = new BriandaisTrie(*t.m_right);
         }
         m_key = t.m_key;
         m_char = t.m_char;
@@ -300,7 +263,7 @@ HybridTrie& HybridTrie::operator=(const HybridTrie& t)
     return *this;
 }
 
-void HybridTrie::listWords(std::vector<std::string> &vs, std::string &s)
+void BriandaisTrie::listWords(std::vector<std::string> &vs, std::string &s)
 {
     std::string sc(s);
 
@@ -324,7 +287,7 @@ void HybridTrie::listWords(std::vector<std::string> &vs, std::string &s)
     }
 }
 
-void HybridTrie::insertSorted(std::vector<std::string> &vs, int begin, int end)
+void BriandaisTrie::insertSorted(std::vector<std::string> &vs, int begin, int end)
 {
     /* Inserting a sorted array in order would result in a degenerate tree.
      * Instead, use the middle element of the array as a pivot, insert it, and

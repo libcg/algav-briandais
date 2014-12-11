@@ -2,6 +2,7 @@
 #include "test.h"
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <algorithm>
 
 using namespace std;
@@ -257,6 +258,46 @@ TEST(merge)
     SUCCESS()
 }
 
+TEST(shakespeare)
+{
+    cout << " shakespeare" << endl;
+    string files(
+        "1henryiv.txt 1henryvi.txt 2henryiv.txt 2henryvi.txt 3henryvi.txt allsw"
+        "ell.txt asyoulikeit.txt cleopatra.txt comedy_errors.txt coriolanus.txt"
+        " cymbeline.txt hamlet.txt henryviii.txt henryv.txt john.txt julius_cae"
+        "sar.txt lear.txt lll.txt macbeth.txt measure.txt merchant.txt merry_wi"
+        "ves.txt midsummer.txt much_ado.txt othello.txt pericles.txt richardiii"
+        ".txt richardii.txt romeo_juliet.txt taming_shrew.txt tempest.txt timon"
+        ".txt titus.txt troilus_cressida.txt twelfth_night.txt two_gentlemen.tx"
+        "t winters_tale.txt"
+    );
+    string file;
+    string word;
+    vector<string> words;
+    BriandaisTrie t;
+
+    istringstream iss(files, istringstream::in);
+
+    while (iss >> file) {
+        ifstream ifs("data/" + file);
+
+        while (getline(ifs, word)) {
+            words.push_back(word);
+        }
+    }
+
+    for (auto it = words.begin(); it != words.end(); it++) {
+        t.insert(*it);
+    }
+
+    cout << "* countWords " << t.countWords() << endl;
+    cout << "* countNil " << t.countNil() << endl;
+    cout << "* height " << t.height() << endl;
+    cout << "* meanDepth " << t.meanDepth() << endl;
+
+    SUCCESS()
+}
+
 int main(int argc, char *argv[])
 {
     test_t test[] =
@@ -270,7 +311,8 @@ int main(int argc, char *argv[])
         test_meanDepth,
         test_prefix,
         test_remove,
-        test_merge
+        test_merge,
+        test_shakespeare
     };
 
     return test_run(test, sizeof(test) / sizeof(test_t));

@@ -9,6 +9,7 @@ bool test_run(test_t test[], int n)
 
     for (int i = 0; i < n; i++) {
         cout << "test " << i;
+
         if (test[i]()) {
             cout << " failed" << endl;
         }

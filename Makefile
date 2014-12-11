@@ -2,7 +2,10 @@ CC=g++
 CPPFLAGS=-Iinclude/ -Wall -std=c++11 -g
 LDFLAGS=
 
-all: test_hybridtrie test_briandaistrie
+all: dir test_hybridtrie test_briandaistrie
+
+dir:
+	mkdir -p bin/ obj/
 
 clean:
 	rm -f obj/*.o bin/*
